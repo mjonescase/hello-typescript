@@ -25,29 +25,29 @@ jobs:
   unit-test:
     executor:
       name: node/default
-      steps:
-        - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
-        - run: yarn test
+    steps:
+      - restore_cache:
+        keys:
+          - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
+      - run: yarn test
 
   lint:
     executor:
       name: node/default
-      steps:
-        - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
-        - run: yarn lint-strict
+    steps:
+      - restore_cache:
+        keys:
+          - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
+      - run: yarn lint-strict
 
   audit-dependencies:
     executor:
       name: node/default
-      steps:
-        - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
-        - run: yarn audit-dependencies
+    steps:
+      - restore_cache:
+        keys:
+          - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
+      - run: yarn audit-dependencies
 
 workflows:
     standard-build:
