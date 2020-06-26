@@ -1,0 +1,67 @@
+version: 2.1
+orbs:
+  node: circleci/node@1.1.6
+
+jobs:
+  install-dependencies:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - run: yarn
+      - save_cache:
+          key: package-lock.json
+          paths: 
+            - node_modules
+  compile:
+    executor:
+      name: node/default
+    steps:
+      - restore_cache:
+        keys:
+          - {{ .Branch }}-{{ checksum "package-lock.json" }}
+      - run: yarn build-ts
+      - save_cache:
+        key: dist
+        paths:
+          - dist
+          
+  unit-test:
+    executor:
+      name: node/default
+      steps:
+        - restore_cache:
+          keys:
+            - {{ .Branch }}-{{ checksum "package-lock.json" }}
+        - run: yarn test
+
+  lint:
+    executor:
+      name: node/default
+      steps:
+        - restore_cache:
+          keys:
+            - {{ .Branch }}-{{ checksum "package-lock.json" }}
+        - run: yarn lint-strict
+
+  audit-dependencies:
+    executor:
+      name: node/default
+      steps:
+        - restore_cache:
+          keys:
+            - {{ checksum "package-lock.json" }}
+        - run: yarn audit-dependencies
+
+workflows:
+    standard-build:
+      jobs:
+        - install-dependencies
+        - compile:
+            requires: [install-dependencies]
+        - unit-test:
+            requires: [install-dependencies]
+        - lint:
+            requires: [install-dependencies]
+        - audit-dependencies:
+            requires: [install-dependencies]
