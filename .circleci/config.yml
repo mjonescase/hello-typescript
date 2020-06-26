@@ -27,8 +27,8 @@ jobs:
       name: node/default
     steps:
       - restore_cache:
-        keys:
-          - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
+          keys:
+            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
       - run: yarn test
 
   lint:
@@ -36,8 +36,8 @@ jobs:
       name: node/default
     steps:
       - restore_cache:
-        keys:
-          - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
+          keys:
+            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
       - run: yarn lint-strict
 
   audit-dependencies:
@@ -45,8 +45,8 @@ jobs:
       name: node/default
     steps:
       - restore_cache:
-        keys:
-          - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
+          keys:
+            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
       - run: yarn audit-dependencies
 
 workflows:
