@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run: yarn
       - save_cache:
-          key: {{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: '{{ .Branch }}-{{ checksum "package-lock.json" }}'
           paths: 
             - node_modules
   compile:
@@ -18,8 +18,8 @@ jobs:
       name: node/default
     steps:
       - restore_cache:
-        keys:
-          - {{ .Branch }}-{{ checksum "package-lock.json" }}
+          keys:
+            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
       - run: yarn build-ts
           
   unit-test:
@@ -28,7 +28,7 @@ jobs:
       steps:
         - restore_cache:
           keys:
-            - {{ .Branch }}-{{ checksum "package-lock.json" }}
+            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
         - run: yarn test
 
   lint:
@@ -37,7 +37,7 @@ jobs:
       steps:
         - restore_cache:
           keys:
-            - {{ .Branch }}-{{ checksum "package-lock.json" }}
+            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
         - run: yarn lint-strict
 
   audit-dependencies:
@@ -46,7 +46,7 @@ jobs:
       steps:
         - restore_cache:
           keys:
-            - {{ .Branch }}-{{ checksum "package-lock.json" }}
+            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
         - run: yarn audit-dependencies
 
 workflows:
