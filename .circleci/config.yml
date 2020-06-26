@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run: yarn
       - save_cache:
-          key: package-lock.json
+          key: {{ .Branch }}-{{ checksum "package-lock.json" }}
           paths: 
             - node_modules
   compile:
@@ -21,10 +21,6 @@ jobs:
         keys:
           - {{ .Branch }}-{{ checksum "package-lock.json" }}
       - run: yarn build-ts
-      - save_cache:
-        key: dist
-        paths:
-          - dist
           
   unit-test:
     executor:
@@ -50,7 +46,7 @@ jobs:
       steps:
         - restore_cache:
           keys:
-            - {{ checksum "package-lock.json" }}
+            - {{ .Branch }}-{{ checksum "package-lock.json" }}
         - run: yarn audit-dependencies
 
 workflows:
