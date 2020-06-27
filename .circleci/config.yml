@@ -13,6 +13,14 @@ jobs:
           key: '{{ .Branch }}-{{ checksum "yarn.lock" }}'
           paths: 
             - node_modules
+      - save_cache:
+          key: '{{ .Branch }}-{{ .Revision }}'
+          paths:
+            - src
+            - package.json
+            - audit-ci.json
+            - jest.config.js
+            - tsconfig.json
   compile:
     executor:
       name: node/default
@@ -20,15 +28,21 @@ jobs:
       - restore_cache:
           keys:
             - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
+      - restore_cache:
+          keys:
+            - '{{ .Branch }}-{{ .Revision }}'
       - run: yarn build-ts
           
-  unit-test:
+  test-unit:
     executor:
       name: node/default
     steps:
       - restore_cache:
           keys:
             - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
+      - restore_cache:
+          keys:
+            - '{{ .Branch }}-{{ .Revision }}'
       - run: yarn test
 
   lint:
@@ -36,8 +50,11 @@ jobs:
       name: node/default
     steps:
       - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
+        keys:
+          - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
+      - restore_cache:
+        keys:
+          - '{{ .Branch }}-{{ .Revision }}'
       - run: yarn lint-strict
 
   audit-dependencies:
@@ -47,6 +64,9 @@ jobs:
       - restore_cache:
           keys:
             - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
+      - restore_cache:
+          keys:
+            - '{{ .Branch }}-{{ .Revision }}'
       - run: yarn audit-dependencies
 
 workflows:
@@ -55,7 +75,7 @@ workflows:
         - install-dependencies
         - compile:
             requires: [install-dependencies]
-        - unit-test:
+        - test-unit:
             requires: [install-dependencies]
         - lint:
             requires: [install-dependencies]
