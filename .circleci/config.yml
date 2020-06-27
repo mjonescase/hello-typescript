@@ -50,11 +50,11 @@ jobs:
       name: node/default
     steps:
       - restore_cache:
-        keys:
-          - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
+          keys:
+            - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
       - restore_cache:
-        keys:
-          - '{{ .Branch }}-{{ .Revision }}'
+          keys:
+            - '{{ .Branch }}-{{ .Revision }}'
       - run: yarn lint-strict
 
   audit-dependencies:
