@@ -2,6 +2,17 @@ version: 2.1
 orbs:
   node: circleci/node@1.1.6
 
+commands:
+  restore_caches:
+    description: Restore node_modules/, src/ and other files
+    steps:
+      - restore_cache:
+        keys:
+          - '{{ .Branch }}-{{ .Revision }}'
+    - restore_cache:
+        keys:
+          - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
+
 jobs:
   install-dependencies:
     executor:
@@ -17,6 +28,7 @@ jobs:
           key: '{{ .Branch }}-{{ .Revision }}'
           paths:
             - src
+            - yarn.lock
             - package.json
             - audit-ci.json
             - jest.config.js
@@ -25,48 +37,28 @@ jobs:
     executor:
       name: node/default
     steps:
-      - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
-      - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ .Revision }}'
+
       - run: yarn build-ts
           
   test-unit:
     executor:
       name: node/default
     steps:
-      - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
-      - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ .Revision }}'
+      - restore_caches
       - run: yarn test
 
   lint:
     executor:
       name: node/default
     steps:
-      - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
-      - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ .Revision }}'
+      - restore_caches
       - run: yarn lint-strict
 
   audit-dependencies:
     executor:
       name: node/default
     steps:
-      - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
-      - restore_cache:
-          keys:
-            - '{{ .Branch }}-{{ .Revision }}'
+      - restore_caches
       - run: yarn audit-dependencies
 
 workflows:
