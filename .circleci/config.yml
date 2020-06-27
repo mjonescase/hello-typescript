@@ -7,11 +7,11 @@ commands:
     description: 'Restore node_modules/, src/ and other files'
     steps:
       - restore_cache:
-        keys:
-          - '{{ .Branch }}-{{ .Revision }}'
+          keys:
+            - '{{ .Branch }}-{{ .Revision }}'
       - restore_cache:
-        keys:
-          - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
+          keys:
+            - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
 
 jobs:
   install-dependencies:
