@@ -4,12 +4,12 @@ orbs:
 
 commands:
   restore_caches:
-    description: Restore node_modules/, src/ and other files
+    description: 'Restore node_modules/, src/ and other files'
     steps:
       - restore_cache:
         keys:
           - '{{ .Branch }}-{{ .Revision }}'
-    - restore_cache:
+      - restore_cache:
         keys:
           - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
 
