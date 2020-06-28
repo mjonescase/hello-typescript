@@ -33,11 +33,12 @@ jobs:
             - audit-ci.json
             - jest.config.js
             - tsconfig.json
+            - .eslintrc.js
   compile:
     executor:
       name: node/default
     steps:
-
+      - restore_caches
       - run: yarn build-ts
           
   test-unit:
