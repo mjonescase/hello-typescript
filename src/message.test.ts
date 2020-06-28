@@ -1,7 +1,7 @@
-import { getMessage } from './message';
+import { getMessage } from "./message";
 
 describe("get message", () => {
-    test("returns hello world", () => {
-        expect(getMessage()).toBe("Hello World!");
-    });
+  test("returns hello world", () => {
+    expect(getMessage()).toBe("Hello World!");
+  });
 });

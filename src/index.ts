@@ -1,3 +1,3 @@
-import { getMessage } from './message';
+import { getMessage } from "./message";
 
 console.log(getMessage());
