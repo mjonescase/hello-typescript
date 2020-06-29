@@ -19,6 +19,9 @@ jobs:
       name: node/default
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
       - run: yarn
       - save_cache:
           key: '{{ .Branch }}-{{ checksum "yarn.lock" }}'
