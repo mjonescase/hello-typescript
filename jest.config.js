@@ -1,18 +1,25 @@
 module.exports = {
-    globals: {
-        "ts-jest": {
-            tsConfig: "tsconfig.json"
-        }
-    },
-    moduleFileExtensions: [
-        "ts",
-        "js"
-    ],
+    coverageDirectory: './coverage',
+    collectCoverageFrom: ['src/**/*.ts', 'src/**/*.tsx'],
+    testEnvironment: 'node',
+    modulePaths: ['<rootDir>/src', 'node_modules'],
+    roots: ['src'],
     transform: {
-        "^.+\\.(ts|tsx)$": "ts-jest"
+        '^.+\\.tsx?$': 'ts-jest'
     },
-    testMatch: [
-        "**/src/**/*.test.(ts|js)"
-    ],
-    testEnvironment: "node"
+    testRegex: '(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$',
+    coverageReporters: ['json', 'lcov', 'text'],
+    coveragePathIgnorePatterns: ['.*/src/.*\\.d\\.ts', '.*/src/testUtil/.*'],
+    testResultsProcessor: 'jest-sonar-reporter',
+
+    // set coverage goals
+    // "npm test" will fail if these metrics are violated
+    coverageThreshold: {
+        global: {
+            statements: 0,
+            branches: 0,
+            functions: 0,
+            lines: 0
+        }
+    }
 };

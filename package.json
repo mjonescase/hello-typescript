@@ -9,10 +9,10 @@
     "debug": "npm run build && npm run watch-debug",
     "lint": "tsc --noEmit && eslint \"src/**/*.ts\" --quiet --fix",
     "lint-strict": "tsc --noEmit && eslint \"src/**/*.ts\"",
-    "test": "jest --forceExit --coverage --verbose",
+    "test": "jest --forceExit --detectOpenHandles --coverage",
     "watch-test": "npm run test -- --watchAll",
     "watch-ts": "tsc -w",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Jest,ESLINT\" -c \"yellow.bold,cyan.bold,orange.bold\" \"npm run watch-ts\" \"npm run watch-test\" \"npm run lint\"",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Jest\" -c \"yellow.bold,cyan.bold\" \"npm run watch-ts\" \"npm run watch-test\"",
     "audit-dependencies": "audit-ci --config audit-ci.json",
     "sonar": "sonarqube-verify"
   },
@@ -30,9 +30,12 @@
     "concurrently": "^5.2.0",
     "eslint": "^7.2.0",
     "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-sonarjs": "^0.5.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
+    "jest-sonar-reporter": "^2.0.0",
     "prettier": "^2.0.5",
     "prettier-eslint": "^11.0.0",
     "sonarqube-scanner": "^2.6.0",
@@ -43,13 +46,16 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-sonarjs": "^0.5.0",
     "lodash": "^4.17.15"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint" 
+      "pre-commit": "yarn lint"
     }
+  },
+  "jestSonar": {
+    "reportPath": "coverage",
+    "reportFile": "test-reporter.xml",
+    "indent": 4
   }
 }
