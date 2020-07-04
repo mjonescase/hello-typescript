@@ -1,8 +1,10 @@
 {
-  "name": "hello-typescript",
+  "name": "@mwjones/hello-typescript",
   "version": "0.1.0",
   "description": "A starting point for typescript nodejs projects",
   "license": "MIT",
+  "files": [ "dist" ],
+  "main": "dist/index.js",
   "scripts": {
     "build": "npm run build-ts && npm run lint",
     "build-ts": "tsc",
