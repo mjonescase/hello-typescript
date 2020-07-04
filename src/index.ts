@@ -1,3 +1,1 @@
-import { getMessage } from "./message";
-
-console.log(getMessage());
+export { getMessage } from "./message";
