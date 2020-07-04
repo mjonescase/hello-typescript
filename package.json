@@ -1,6 +1,6 @@
 {
   "name": "@mwjones/hello-typescript",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A starting point for typescript nodejs projects",
   "license": "MIT",
   "files": [
