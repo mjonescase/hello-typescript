@@ -4,7 +4,7 @@
   "description": "A starting point for typescript nodejs projects",
   "license": "MIT",
   "files": [
-    "dist"
+    "dist/**/!(*.test).js?(.map)"
   ],
   "main": "dist/index.js",
   "scripts": {
