@@ -1,3 +1,3 @@
-export function getMessage(): String {
+export function getMessage(): string {
   return "Hello World!";
 }
