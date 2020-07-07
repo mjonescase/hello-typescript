@@ -75,7 +75,7 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
           npm publish $(ls *.tgz) --dryrun
 
-  publish-dryrun:
+  publish:
     executor:
       name: node/default
     steps:
