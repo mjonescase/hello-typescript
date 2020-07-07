@@ -70,7 +70,10 @@ jobs:
       name: node/default
     steps:
       - restore_caches
-      - run: npm publish --dryrun
+      - run: |
+          npm pack
+          npm publish $(ls *.tgz) --access public --dryrun
+
 
 workflows:
     standard-build:
