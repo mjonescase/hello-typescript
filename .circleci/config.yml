@@ -75,6 +75,15 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
           npm publish $(ls *.tgz) --dryrun
 
+  publish-dryrun:
+    executor:
+      name: node/default
+    steps:
+      - restore_caches
+      - run: |
+          npm pack
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+          npm publish $(ls *.tgz)
 
 workflows:
     standard-build:
@@ -90,3 +99,13 @@ workflows:
             requires: [install-dependencies]
         - publish-dryrun:
             requires: [compile]
+        - publish:
+            requires:
+              - compile
+              - test-unit
+              - lint
+              - audit-dependencies
+              - publish-dryrun
+            branches:
+              only:
+                - master
