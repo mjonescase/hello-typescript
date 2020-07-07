@@ -73,7 +73,7 @@ jobs:
       - run: |
           npm pack
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-          npm publish $(ls *.tgz) --dryrun
+          npm publish $(ls *.tgz) --dry-run
 
   publish:
     executor:
