@@ -72,7 +72,8 @@ jobs:
       - restore_caches
       - run: |
           npm pack
-          npm publish $(ls *.tgz) --access public --dryrun
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+          npm publish $(ls *.tgz) --dryrun
 
 
 workflows:
