@@ -85,4 +85,4 @@ workflows:
         - audit-dependencies:
             requires: [install-dependencies]
         - publish-dryrun:
-            requires: [install-dependencies]
+            requires: [compile]
