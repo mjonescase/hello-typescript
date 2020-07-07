@@ -75,7 +75,8 @@ jobs:
     steps:
       - restore_caches
       - restore_cache:
-          keys: 'dist-{{ .Branch }}-{{ .Revision }}'
+          keys:
+            - 'dist-{{ .Branch }}-{{ .Revision }}'
       - run: |
           npm pack
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
@@ -87,7 +88,8 @@ jobs:
     steps:
       - restore_caches
       - restore_cache:
-          keys: 'dist-{{ .Branch }}-{{ .Revision }}'
+          keys:
+            - 'dist-{{ .Branch }}-{{ .Revision }}'
       - run: |
           npm pack
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
