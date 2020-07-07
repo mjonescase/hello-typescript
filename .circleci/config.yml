@@ -64,6 +64,13 @@ jobs:
     steps:
       - restore_caches
       - run: yarn audit-dependencies
+  
+  publish-dryrun:
+    executor:
+      name: node/default
+    steps:
+      - restore_caches
+      - run: npm publish --dryrun
 
 workflows:
     standard-build:
@@ -76,4 +83,6 @@ workflows:
         - lint:
             requires: [install-dependencies]
         - audit-dependencies:
+            requires: [install-dependencies]
+        - publish-dryrun:
             requires: [install-dependencies]
