@@ -95,7 +95,7 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
           npm publish $(ls *.tgz)
 
-  publish-artifactory-dryrun:
+  publish-artifactory:
     executor:
       name: node/default
     steps:
@@ -103,23 +103,20 @@ jobs:
       - restore_cache:
           keys:
             - 'dist-{{ .Branch }}-{{ .Revision }}'
-      - run: |
-          npm pack
-          echo "//mikejones.jfrog.io/:_authToken=${ARTIFACTORY_TOKEN}" > .npmrc
-          npm publish $(ls *.tgz) --dry-run
+      - run: npm pack
+      - run:
+          name: Install jFrog CLI
+          command: |
+            curl -fL https://getcli.jfrog.io | sh
+      - run:
+          name: Configure jFrog CLI
+          command: |
+            ./jfrog rt config --url https://mikejones.jfrog.io --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_TOKEN --interactive false
+      - run:
+          name: Publish to jFrog
+          command: |
+            ./jfrog rt u "*.tgz" npm-local --build-name={{ .Branch }}-{{ .Revision }} --build-number {{ .BuildNum }} --flat false
 
-  publish-artifactory:
-      executor:
-        name: node/default
-      steps:
-        - restore_caches
-        - restore_cache:
-            keys:
-              - 'dist-{{ .Branch }}-{{ .Revision }}'
-        - run: |
-            npm pack
-            echo "//mikejones.jfrog.io/:_authToken=${ARTIFACTORY_TOKEN}" > .npmrc
-            npm publish $(ls *.tgz)
 
 workflows:
     standard-build:
@@ -133,7 +130,7 @@ workflows:
             requires: [install-dependencies]
         - audit-dependencies:
             requires: [install-dependencies]
-        - publish-artifactory-dryrun:
+        - publish-dryrun:
             requires: [compile]
         - publish-artifactory:
             requires:
@@ -141,7 +138,7 @@ workflows:
               - test-unit
               - lint
               - audit-dependencies
-              - publish-artifactory-dryrun
+              - publish-dryrun
             filters:
               branches:
                 only:
