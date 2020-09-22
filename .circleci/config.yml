@@ -95,6 +95,32 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
           npm publish $(ls *.tgz)
 
+  publish-artifactory-dryrun:
+    executor:
+      name: node/default
+    steps:
+      - restore_caches
+      - restore_cache:
+          keys:
+            - 'dist-{{ .Branch }}-{{ .Revision }}'
+      - run: |
+          npm pack
+          echo "//mikejones.jfrog.io/:_authToken=${ARTIFACTORY_TOKEN}" > .npmrc
+          npm publish $(ls *.tgz) --dry-run
+
+  publish-artifactory:
+      executor:
+        name: node/default
+      steps:
+        - restore_caches
+        - restore_cache:
+            keys:
+              - 'dist-{{ .Branch }}-{{ .Revision }}'
+        - run: |
+            npm pack
+            echo "//mikejones.jfrog.io/:_authToken=${ARTIFACTORY_TOKEN}" > .npmrc
+            npm publish $(ls *.tgz)
+
 workflows:
     standard-build:
       jobs:
@@ -107,9 +133,9 @@ workflows:
             requires: [install-dependencies]
         - audit-dependencies:
             requires: [install-dependencies]
-        - publish-dryrun:
+        - publish-artifactory-dryrun:
             requires: [compile]
-        - publish:
+        - publish-artifactory:
             requires:
               - compile
               - test-unit
@@ -119,4 +145,4 @@ workflows:
             filters:
               branches:
                 only:
-                  - master
+                  - mainline
