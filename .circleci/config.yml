@@ -141,7 +141,7 @@ workflows:
               - test-unit
               - lint
               - audit-dependencies
-              - publish-dryrun
+              - publish-artifactory-dryrun
             filters:
               branches:
                 only:
