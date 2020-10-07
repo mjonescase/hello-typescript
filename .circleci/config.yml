@@ -18,6 +18,7 @@ jobs:
     executor:
       name: node/default
     steps:
+      - checkout
       - run: |
           npm install jfrog-cli-go
           jfrog rt c import $JFROG_RT_MIKEJONES_EXPORT
