@@ -11,9 +11,17 @@ commands:
             - '{{ .Branch }}-{{ .Revision }}'
       - restore_cache:
           keys:
-            - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
+            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
 
 jobs:
+  configure-jfrog-cli:
+    executor:
+      name: node/default
+    steps:
+      - run: |
+          npm install -g jfrog-cli-go
+          jfrog rt c import $JFROG_RT_MIKEJONES_EXPORT
+          jfrog rt npmc --global true --server-id-deploy mikejones --server-id-resolve mikejones --repo-deploy npm --repo-resolve npm
   install-dependencies:
     executor:
       name: node/default
@@ -21,17 +29,17 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - '{{ .Branch }}-{{ checksum "yarn.lock" }}'
-      - run: yarn
+            - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
+      - run: jfrog rt npmi
       - save_cache:
-          key: '{{ .Branch }}-{{ checksum "yarn.lock" }}'
+          key: '{{ .Branch }}-{{ checksum "package-lock.json" }}'
           paths: 
             - node_modules
       - save_cache:
           key: '{{ .Branch }}-{{ .Revision }}'
           paths:
             - src
-            - yarn.lock
+            - package-lock.json
             - package.json
             - audit-ci.json
             - jest.config.js
@@ -42,7 +50,7 @@ jobs:
       name: node/default
     steps:
       - restore_caches
-      - run: yarn build-ts
+      - run: npm run build-ts
       - save_cache:
           key: 'dist-{{ .Branch }}-{{ .Revision }}'
           paths:
@@ -53,21 +61,21 @@ jobs:
       name: node/default
     steps:
       - restore_caches
-      - run: yarn test
+      - run: npm run test
 
   lint:
     executor:
       name: node/default
     steps:
       - restore_caches
-      - run: yarn lint-strict
+      - run: npm run lint-strict
 
   audit-dependencies:
     executor:
       name: node/default
     steps:
       - restore_caches
-      - run: yarn audit-dependencies
+      - run: npm run audit-dependencies
   
   publish-dryrun:
     executor:
@@ -79,8 +87,7 @@ jobs:
             - 'dist-{{ .Branch }}-{{ .Revision }}'
       - run: |
           npm pack
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-          npm publish $(ls *.tgz) --dry-run
+          jfrog rt npmp --dry-run
 
   publish:
     executor:
@@ -92,36 +99,14 @@ jobs:
             - 'dist-{{ .Branch }}-{{ .Revision }}'
       - run: |
           npm pack
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-          npm publish $(ls *.tgz)
-
-  publish-artifactory:
-    executor:
-      name: node/default
-    steps:
-      - restore_caches
-      - restore_cache:
-          keys:
-            - 'dist-{{ .Branch }}-{{ .Revision }}'
-      - run: npm pack
-      - run:
-          name: Install jFrog CLI
-          command: |
-            curl -fL https://getcli.jfrog.io | sh
-      - run:
-          name: Configure jFrog CLI
-          command: |
-            ./jfrog rt config --url https://mikejones.jfrog.io --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_TOKEN --interactive false
-      - run:
-          name: Publish to jFrog
-          command: |
-            ./jfrog rt u "*.tgz" npm-local --build-name={{ .Branch }}-{{ .Revision }} --build-number {{ .BuildNum }} --flat false
-
+          jfrog rt npmp
 
 workflows:
     standard-build:
       jobs:
-        - install-dependencies
+        - configure-jfrog-cli
+        - install-dependencies:
+            requires: [configure-jfrog-cli]
         - compile:
             requires: [install-dependencies]
         - test-unit:
@@ -132,7 +117,7 @@ workflows:
             requires: [install-dependencies]
         - publish-dryrun:
             requires: [compile]
-        - publish-artifactory:
+        - publish:
             requires:
               - compile
               - test-unit
