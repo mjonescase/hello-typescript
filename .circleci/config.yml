@@ -20,8 +20,8 @@ jobs:
     steps:
       - run: |
           curl -fL https://getcli.jfrog.io | sh
-          jfrog rt c import $JFROG_RT_MIKEJONES_EXPORT
-          jfrog rt npmc --global true --server-id-deploy mikejones --server-id-resolve mikejones --repo-deploy npm --repo-resolve npm
+          ./jfrog rt c import $JFROG_RT_MIKEJONES_EXPORT
+          ./jfrog rt npmc --global true --server-id-deploy mikejones --server-id-resolve mikejones --repo-deploy npm --repo-resolve npm
   install-dependencies:
     executor:
       name: node/default
