@@ -39,6 +39,7 @@ jobs:
       - restore_cache:
           keys:
             - jfrog-{{ .Branch }}-{{ .Revision }}
+      - run: ./jfrog rt c show
       - run: ./jfrog rt npmi
       - save_cache:
           key: '{{ .Branch }}-{{ checksum "package-lock.json" }}'
