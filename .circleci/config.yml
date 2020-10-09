@@ -26,7 +26,8 @@ jobs:
           key: jfrog-{{ .Branch }}-{{ .Revision }}
           paths:
             - jfrog
-            - ".jfrog"
+            - ".jfrog/jfrog-cli.conf"
+            - ".jfrog/projects/npm.yaml"
   install-dependencies:
     executor:
       name: node/default
