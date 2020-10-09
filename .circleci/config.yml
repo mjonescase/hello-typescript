@@ -21,9 +21,9 @@ jobs:
       - run: |
           curl -fL https://getcli.jfrog.io | sh
           ./jfrog rt c import $JFROG_RT_MIKEJONES_EXPORT
-          ./jfrog rt npmc --global --server-id-deploy mikejones --server-id-resolve mikejones --repo-deploy npm --repo-resolve npm
+          ./jfrog rt npmc --server-id-deploy mikejones --server-id-resolve mikejones --repo-deploy npm --repo-resolve npm
       - save_cache:
-          key: jfrog
+          key: jfrog-{{ .Branch }}-{{ .Revision }}
           paths:
             - jfrog
             - ".jfrog/projects/npm.yaml"
@@ -37,7 +37,7 @@ jobs:
             - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
       - restore_cache:
           keys:
-            - jfrog
+            - jfrog-{{ .Branch }}-{{ .Revision }}
       - run: ./jfrog rt npmi
       - save_cache:
           key: '{{ .Branch }}-{{ checksum "package-lock.json" }}'
@@ -95,7 +95,7 @@ jobs:
             - 'dist-{{ .Branch }}-{{ .Revision }}'
       - restore_cache:
           keys:
-            - jfrog
+            - jfrog-{{ .Branch }}-{{ .Revision }}
       - run: |
           npm pack
           ./jfrog rt npmp --dry-run
@@ -109,7 +109,7 @@ jobs:
             - 'dist-{{ .Branch }}-{{ .Revision }}'
       - restore_cache:
           keys:
-            - jfrog
+            - jfrog-{{ .Branch }}-{{ .Revision }}
       - run: |
           npm pack
           ./jfrog rt npmp
