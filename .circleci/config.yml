@@ -21,6 +21,7 @@ jobs:
       - run: |
           curl -fL https://getcli.jfrog.io | sh
           ./jfrog rt c import $JFROG_RT_MIKEJONES_EXPORT
+          ./jfrog rt c show mikejones
           ./jfrog rt npmc --server-id-deploy mikejones --server-id-resolve mikejones --repo-deploy npm --repo-resolve npm
       - save_cache:
           key: jfrog-{{ .Branch }}-{{ .Revision }}
@@ -39,7 +40,7 @@ jobs:
       - restore_cache:
           keys:
             - jfrog-{{ .Branch }}-{{ .Revision }}
-      - run: ./jfrog rt c show
+      - run: ./jfrog rt c show mikejones
       - run: ./jfrog rt npmi
       - save_cache:
           key: '{{ .Branch }}-{{ checksum "package-lock.json" }}'
