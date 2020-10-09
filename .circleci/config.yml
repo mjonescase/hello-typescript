@@ -30,7 +30,7 @@ jobs:
       - restore_cache:
           keys:
             - '{{ .Branch }}-{{ checksum "package-lock.json" }}'
-      - run: jfrog rt npmi
+      - run: ./jfrog rt npmi
       - save_cache:
           key: '{{ .Branch }}-{{ checksum "package-lock.json" }}'
           paths: 
@@ -87,7 +87,7 @@ jobs:
             - 'dist-{{ .Branch }}-{{ .Revision }}'
       - run: |
           npm pack
-          jfrog rt npmp --dry-run
+          ./jfrog rt npmp --dry-run
 
   publish:
     executor:
@@ -99,7 +99,7 @@ jobs:
             - 'dist-{{ .Branch }}-{{ .Revision }}'
       - run: |
           npm pack
-          jfrog rt npmp
+          ./jfrog rt npmp
 
 workflows:
     standard-build:
